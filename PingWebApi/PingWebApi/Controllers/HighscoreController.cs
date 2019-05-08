@@ -12,17 +12,17 @@ namespace PingWebApi.Controllers
         [HttpGet]
         public IEnumerable<UserScore> GetAllScores()
         {
-            return DatabaseCommand.ReadScore("SELECT * FROM User_Score");
+            return DatabaseCommand.ReadScore("SELECT * FROM User_Score ORDER BY Score DESC");
         }
 
         // GET: api/Highscore/5
-        [HttpGet("{id}", Name = "Get")]
+        [HttpGet("{userId}", Name = "Get")]
         public IEnumerable<UserScore> GetAllScoresFromSingleUser(string userId)
         {
-            return DatabaseCommand.ReadScore($"SELECT * FROM User_Score WHERE UserId ='{userId}'");
+            return DatabaseCommand.ReadScore($"SELECT * FROM User_Score WHERE UserId ='{userId}' ORDER BY Score DESC");
         }
 
-        [HttpGet("top", Name = "Top")]
+        [HttpGet("top/{amount}", Name = "Top")]
         public IEnumerable<UserScore> GetTop100(int amount)
         {
             return DatabaseCommand.ReadScore($"SELECT TOP {amount} * FROM User_Score ORDER BY Score DESC");
@@ -36,7 +36,7 @@ namespace PingWebApi.Controllers
         }
 
         // DELETE: api/ApiWithActions/5
-        [HttpDelete("{id}")]
+        [HttpDelete("{userId}")]
         public void DeleteAllSpecificUserScores(string userId)
         {
             DatabaseCommand.ExecuteQuery($"DELETE FROM User_Score WHERE UserId = '{userId}'");

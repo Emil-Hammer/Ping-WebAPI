@@ -19,7 +19,7 @@ namespace PingWebApi.Controllers
         }
 
         // GET api/values/5
-        [HttpGet("{id}")]
+        [HttpGet("{userId}")]
         public IEnumerable<Users> GetUser(string userId)
         {
             return DatabaseCommand.ReadUsers($"SELECT * FROM Users WHERE Id = '{userId}'");
@@ -33,14 +33,14 @@ namespace PingWebApi.Controllers
         }
 
         // PUT api/values/5
-        [HttpPut("{id}")]
+        [HttpPut("{userId}")]
         public void Put(string userId, [FromBody] string username, string ballColor, string playerColor, int ballSize)
         {
             DatabaseCommand.ExecuteQuery($"UPDATE Users SET Username = '{username}', Ball_Color = '{ballColor}', Player_Color = '{playerColor}', Ball_Size = '{ballSize}' WHERE Id = '{userId}'");
         }
 
         // DELETE api/values/5
-        [HttpDelete("{id}")]
+        [HttpDelete("{userId}")]
         public void Delete(string userId)
         {
             DatabaseCommand.ExecuteQuery($"DELETE FROM Users WHERE Id = '{userId}'");
