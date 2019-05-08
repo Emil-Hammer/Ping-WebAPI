@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 
@@ -28,9 +27,8 @@ namespace PingWebApi.Model
             }
         }
 
-        public static List<string> ReadQuery(string queryString)
+        public static List<Users> ReadUsers(string queryString)
         {
-            string output = "";
             using (SqlConnection connection = new SqlConnection(ConnectionString))
             {
                 connection.Open();
@@ -38,13 +36,33 @@ namespace PingWebApi.Model
                 SqlCommand command = new SqlCommand(queryString, connection);
                 SqlDataReader dataReader = command.ExecuteReader();
 
-                List<string> list = new List<string>();
+                List<Users> list = new List<Users>();
 
-                while (dataReader.Read())
+                foreach (var unused in dataReader)
                 {
-                    list.Add(output + dataReader.GetValue(0) + " - " + dataReader.GetValue(1) + "\n");
+                    Users user = new Users((string)dataReader.GetValue(0), (string)dataReader.GetValue(1));
+                    list.Add(user);
                 }
+                return list;
+            }
+        }
 
+        public static List<UserScore> ReadScore(string queryString)
+         {
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            {
+                connection.Open();
+
+                SqlCommand command = new SqlCommand(queryString, connection);
+                SqlDataReader dataReader = command.ExecuteReader();
+
+                List<UserScore> list = new List<UserScore>();
+
+                foreach (var unused in dataReader)
+                {
+                    UserScore score = new UserScore((string)dataReader.GetValue(0), (int)dataReader.GetValue(1));
+                    list.Add(score);
+                }
                 return list;
             }
         }
