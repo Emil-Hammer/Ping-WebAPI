@@ -20,9 +20,9 @@ namespace PingWebApi.Controllers
 
         // GET api/values/5
         [HttpGet("{userId}")]
-        public IEnumerable<Users> GetUser(string userId)
+        public Users GetUser(string userId)
         {
-            return DatabaseCommand.ReadUsers($"SELECT * FROM Users WHERE Id = '{userId}'");
+            return DatabaseCommand.ReadUsers($"SELECT * FROM Users WHERE Id = '{userId}'").First();
         }
 
         // POST api/values
