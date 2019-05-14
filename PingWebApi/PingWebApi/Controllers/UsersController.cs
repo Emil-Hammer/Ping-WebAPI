@@ -27,9 +27,9 @@ namespace PingWebApi.Controllers
 
         // POST api/values
         [HttpPost]
-        public void Post([FromBody] string userId, string username)
+        public void Post([FromBody] Users user)
         {
-            DatabaseCommand.ExecuteQuery($"INSERT INTO Users(Id, Username) VALUES('{userId}', '{username}')");
+            DatabaseCommand.ExecuteQuery($"INSERT INTO Users(Id, Username) VALUES('{user.Id}', '{user.Username}')");
         }
 
         // PUT api/values/5
