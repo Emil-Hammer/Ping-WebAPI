@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using Microsoft.AspNetCore.Mvc;
 using PingWebApi.Model;
@@ -18,14 +19,14 @@ namespace PingWebApi.Controllers
 
         // GET api/values/5
         [HttpGet("{userId}")]
-        public IEnumerable<Users> GetUser(string userId)
+        public Users GetUser(string userId)
         {
             var list = DatabaseCommand.ReadUsers($"SELECT * FROM Users WHERE Id = '{userId}'");
             if (list.Count == 0)
             {
                 throw new System.Web.Http.HttpResponseException(HttpStatusCode.NotFound);
             }
-            return list;
+            return list.First();
         }
 
         // POST api/values
