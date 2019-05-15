@@ -36,12 +36,11 @@ namespace PingWebApi.Controllers
         {
             int status = DatabaseCommand.ExecuteQuery($"INSERT INTO User_Score(UserId, Score) VALUES('{userScore.UserId}', '{userScore.Score}')");
 
-            if (status == 0)
+            if (status == 1)
             {
-                return HttpStatusCode.BadRequest;
+                return HttpStatusCode.OK;
             }
-
-            return HttpStatusCode.OK;
+            return HttpStatusCode.BadRequest;
         }
 
         // DELETE: api/5
