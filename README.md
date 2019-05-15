@@ -1,3 +1,3 @@
 # Ping-WebAPI
 
-Azure link: https://pingwebapi.azurewebsites.net/
+Azure link: https://pingwebapi.azurewebsites.net/api/
