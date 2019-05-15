@@ -6,10 +6,10 @@ namespace PingWebApi.Model
 {
     public static class DatabaseCommand
     {
-        private static string ConnectionString = "Server=tcp:pinggame.database.windows.net,1433;Initial Catalog=ping;Persist Security Info=False;User ID=ping;Password=Database123;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
+        private static string _connectionString = "Server=tcp:pinggame.database.windows.net,1433;Initial Catalog=ping;Persist Security Info=False;User ID=ping;Password=Database123;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
         public static void ExecuteQuery(string queryString)
         {
-            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            using (SqlConnection connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
 
@@ -29,7 +29,7 @@ namespace PingWebApi.Model
 
         public static List<Users> ReadUsers(string queryString)
         {
-            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            using (SqlConnection connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
 
@@ -49,7 +49,7 @@ namespace PingWebApi.Model
 
         public static List<UserScore> ReadScore(string queryString)
          {
-            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            using (SqlConnection connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
 

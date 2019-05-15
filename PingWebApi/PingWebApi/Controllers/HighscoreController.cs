@@ -23,6 +23,7 @@ namespace PingWebApi.Controllers
             return DatabaseCommand.ReadScore($"SELECT * FROM User_Score WHERE UserId ='{userId}' ORDER BY Score DESC");
         }
 
+        // GET: api/Highscore/top/5
         [HttpGet("top/{amount}", Name = "Top")]
         public IEnumerable<UserScore> GetTop(int amount)
         {
@@ -36,7 +37,7 @@ namespace PingWebApi.Controllers
             DatabaseCommand.ExecuteQuery($"INSERT INTO User_Score(UserId, Score) VALUES('{userScore.UserId}', '{userScore.Score}')");
         }
 
-        // DELETE: api/ApiWithActions/5
+        // DELETE: api/5
         [HttpDelete("{userId}")]
         public void DeleteAllSpecificUserScores(string userId)
         {
