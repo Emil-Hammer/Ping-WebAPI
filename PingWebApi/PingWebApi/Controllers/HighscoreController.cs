@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using PingWebApi.Model;
+using System.Data.SqlClient;
 
 namespace PingWebApi.Controllers
 {
@@ -23,16 +24,16 @@ namespace PingWebApi.Controllers
         }
 
         [HttpGet("top/{amount}", Name = "Top")]
-        public IEnumerable<UserScore> GetTop100(int amount)
+        public IEnumerable<UserScore> GetTop(int amount)
         {
             return DatabaseCommand.ReadScore($"SELECT TOP {amount} * FROM User_Score ORDER BY Score DESC");
         }
 
         // POST: api/Highscore
         [HttpPost]
-        public void Post([FromBody] string userId, int score)
+        public void Post([FromBody] UserScore userScore)
         {
-            DatabaseCommand.ExecuteQuery($"INSERT INTO User_Score(UserId, Score) VALUES('{userId}', '{score}')");
+            DatabaseCommand.ExecuteQuery($"INSERT INTO User_Score(UserId, Score) VALUES('{userScore.UserId}', '{userScore.Score}')");
         }
 
         // DELETE: api/ApiWithActions/5
