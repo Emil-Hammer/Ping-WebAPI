@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using PingWebApi.Model;
-using System.Data.SqlClient;
+using System.Net;
 
 namespace PingWebApi.Controllers
 {
@@ -32,9 +32,16 @@ namespace PingWebApi.Controllers
 
         // POST: api/Highscore
         [HttpPost]
-        public void Post([FromBody] UserScore userScore)
+        public HttpStatusCode Post([FromBody] UserScore userScore)
         {
-            DatabaseCommand.ExecuteQuery($"INSERT INTO User_Score(UserId, Score) VALUES('{userScore.UserId}', '{userScore.Score}')");
+            int status = DatabaseCommand.ExecuteQuery($"INSERT INTO User_Score(UserId, Score) VALUES('{userScore.UserId}', '{userScore.Score}')");
+
+            if (status == 0)
+            {
+                return HttpStatusCode.BadRequest;
+            }
+
+            return HttpStatusCode.OK;
         }
 
         // DELETE: api/5
