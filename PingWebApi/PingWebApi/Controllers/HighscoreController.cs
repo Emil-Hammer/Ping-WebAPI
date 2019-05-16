@@ -15,14 +15,13 @@ namespace PingWebApi.Controllers
         [HttpGet]
         public IEnumerable<UserScore> GetAllScores()
         {
-            var list = DatabaseCommand.ReadScore("SELECT * FROM User_Score ORDER BY Score DESC");
+            var list = DatabaseCommand.ReadScore("SELECT DISTINCT UserId, Score FROM User_Score ORDER BY Score DESC");
             var newList = new List<UserScore>();
             foreach (var variable in list)
             {
                 var username = _usersController.GetUser(variable.UserId).Username;
                 newList.Add(new UserScore(username, variable.Score));
             }
-
             return newList;
         }
 
@@ -37,7 +36,6 @@ namespace PingWebApi.Controllers
                 var username = _usersController.GetUser(variable.UserId).Username;
                 newList.Add(new UserScore(username, variable.Score));
             }
-
             return newList;
         }
 
@@ -45,14 +43,13 @@ namespace PingWebApi.Controllers
         [HttpGet("top/{amount}", Name = "Top")]
         public IEnumerable<UserScore> GetTop(int amount)
         {
-            var list = DatabaseCommand.ReadScore($"SELECT TOP {amount} * FROM User_Score ORDER BY Score DESC");
+            var list = DatabaseCommand.ReadScore($"SELECT TOP {amount} UserId, MAX(Score) as Score FROM User_Score GROUP BY UserId Order by SCore DESC");
             var newList = new List<UserScore>();
             foreach (var variable in list)
             {
                 var username = _usersController.GetUser(variable.UserId).Username;
                 newList.Add(new UserScore(username, variable.Score));
             }
-
             return newList;
         }
 
