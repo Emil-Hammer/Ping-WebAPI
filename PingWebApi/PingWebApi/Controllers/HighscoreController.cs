@@ -30,14 +30,30 @@ namespace PingWebApi.Controllers
         [HttpGet("{userId}", Name = "Get")]
         public IEnumerable<UserScore> GetAllScoresFromSingleUser(string userId)
         {
-            return DatabaseCommand.ReadScore($"SELECT * FROM User_Score WHERE UserId ='{userId}' ORDER BY Score DESC");
+            var list = DatabaseCommand.ReadScore($"SELECT * FROM User_Score WHERE UserId ='{userId}' ORDER BY Score DESC");
+            var newList = new List<UserScore>();
+            foreach (var variable in list)
+            {
+                var username = _usersController.GetUser(variable.UserId).Username;
+                newList.Add(new UserScore(username, variable.Score));
+            }
+
+            return newList;
         }
 
         // GET: api/Highscore/top/5
         [HttpGet("top/{amount}", Name = "Top")]
         public IEnumerable<UserScore> GetTop(int amount)
         {
-            return DatabaseCommand.ReadScore($"SELECT TOP {amount} * FROM User_Score ORDER BY Score DESC");
+            var list = DatabaseCommand.ReadScore($"SELECT TOP {amount} * FROM User_Score ORDER BY Score DESC");
+            var newList = new List<UserScore>();
+            foreach (var variable in list)
+            {
+                var username = _usersController.GetUser(variable.UserId).Username;
+                newList.Add(new UserScore(username, variable.Score));
+            }
+
+            return newList;
         }
 
         // POST: api/Highscore
