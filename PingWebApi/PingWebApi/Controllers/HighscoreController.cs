@@ -9,11 +9,21 @@ namespace PingWebApi.Controllers
     [ApiController]
     public class HighscoreController : ControllerBase
     {
+        private UsersController _usersController = new UsersController();
+
         // GET: api/Highscore
         [HttpGet]
         public IEnumerable<UserScore> GetAllScores()
         {
-            return DatabaseCommand.ReadScore("SELECT * FROM User_Score ORDER BY Score DESC");
+            var list = DatabaseCommand.ReadScore("SELECT * FROM User_Score ORDER BY Score DESC");
+            var newList = new List<UserScore>();
+            foreach (var variable in list)
+            {
+                var username = _usersController.GetUser(variable.UserId).Username;
+                newList.Add(new UserScore(username, variable.Score));
+            }
+
+            return newList;
         }
 
         // GET: api/Highscore/5
