@@ -4,12 +4,12 @@ namespace PingWebApi.Model
 {
     public class UserScore
     {
-        public UserScore(string userId, int score, string type)
+        public UserScore(string userId, int score, DateTime time, string type)
         {
             UserId = userId;
             Score = score;
-            Type = type;
-            Time = DateTime.Now;
+            Time = time;
+            Type = type;           
         }
 
         public string UserId { get; set; }

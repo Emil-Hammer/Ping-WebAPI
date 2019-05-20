@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using PingWebApi.Model;
 using System.Net;
@@ -12,7 +13,7 @@ namespace PingWebApi.Controllers
         private UsersController _usersController = new UsersController();
 
         // GET: api/Highscore
-        [HttpGet("type/{type}", Name ="GetType")]
+        [HttpGet("{type}", Name ="GetType")]
         public IEnumerable<UserScore> GetAllScoresFromType(string type)
         {
             var list = DatabaseCommand.ReadScore($"SELECT DISTINCT UserId, Score, Time, Type FROM User_Score WHERE Type = '{type}' ORDER BY Score DESC");
@@ -20,35 +21,44 @@ namespace PingWebApi.Controllers
             foreach (var variable in list)
             {
                 var username = _usersController.GetUser(variable.UserId).Username;
-                newList.Add(new UserScore(username, variable.Score, variable.Type));
+                newList.Add(new UserScore(username, variable.Score, variable.Time, variable.Type));
             }
             return newList;
         }
 
-        // GET: api/Highscore/5
-        [HttpGet("{userId}", Name = "Get")]
-        public IEnumerable<UserScore> GetAllScoresFromSingleUser(string userId)
+        // GET: api/Highscore/{type}/{userid}
+        [HttpGet("{type}/{userId}", Name = "Get")]
+        public IEnumerable<UserScore> GetAllScoresFromSingleUser(string userId, string type)
         {
-            var list = DatabaseCommand.ReadScore($"SELECT * FROM User_Score WHERE UserId ='{userId}' ORDER BY Score DESC");
+            var list = DatabaseCommand.ReadScore($"SELECT * FROM User_Score WHERE UserId ='{userId}' AND Type ='{type}' ORDER BY Score DESC");
             var newList = new List<UserScore>();
             foreach (var variable in list)
             {
                 var username = _usersController.GetUser(variable.UserId).Username;
-                newList.Add(new UserScore(username, variable.Score, variable.Type));
+                newList.Add(new UserScore(username, variable.Score, variable.Time, variable.Type));
             }
             return newList;
         }
 
-        // GET: api/Highscore/top/5
-        [HttpGet("top/{amount}", Name = "Top")]
-        public IEnumerable<UserScore> GetTop(int amount)
+        // GET: api/Highscore/{type}/top/{amount}
+        [HttpGet("{type}/top/{amount}", Name = "Top")]
+        public IEnumerable<UserScore> GetTop(int amount, string type)
         {
-            var list = DatabaseCommand.ReadScore($"SELECT TOP {amount} UserId, MAX(Score) as Score FROM User_Score GROUP BY UserId Order by SCore DESC");
+            var list = DatabaseCommand.ReadScore(
+                $"SELECT TOP {amount} MQ.UserId, MQ.Score, MQ.Time, MQ.Type " +
+                $"FROM dbo.User_Score AS MQ " +
+                $"JOIN(SELECT UserId, MAX(Score) AS Score " +
+                    $"FROM dbo.User_Score " +
+                    $"GROUP BY UserId) AS SQ " +
+                $"ON SQ.UserId = MQ.UserId AND SQ.Score = MQ.Score " +
+                $"WHERE Type = '{type}' " +
+                $"ORDER BY Score DESC");
+ 
             var newList = new List<UserScore>();
             foreach (var variable in list)
             {
                 var username = _usersController.GetUser(variable.UserId).Username;
-                newList.Add(new UserScore(username, variable.Score, variable.Type));
+                newList.Add(new UserScore(username, variable.Score, variable.Time, variable.Type));
             }
             return newList;
         }
@@ -57,7 +67,7 @@ namespace PingWebApi.Controllers
         [HttpPost]
         public HttpStatusCode Post([FromBody] UserScore userScore)
         {
-            int status = DatabaseCommand.ExecuteQuery($"INSERT INTO User_Score(UserId, Score) VALUES('{userScore.UserId}', '{userScore.Score}')");
+            int status = DatabaseCommand.ExecuteQuery($"INSERT INTO User_Score(UserId, Score, Time, Type) VALUES('{userScore.UserId}', '{userScore.Score}', '{userScore.Time}', {userScore.Type}')");
 
             if (status == 1)
             {
