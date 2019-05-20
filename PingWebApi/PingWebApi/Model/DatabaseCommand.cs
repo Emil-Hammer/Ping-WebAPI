@@ -69,7 +69,7 @@ namespace PingWebApi.Model
 
                 foreach (var unused in dataReader)
                 {
-                    UserScore score = new UserScore((string)dataReader.GetValue(0), (int)dataReader.GetValue(1),(string)dataReader.GetValue(2));
+                    UserScore score = new UserScore((string)dataReader.GetValue(0), (int)dataReader.GetValue(1), (string)dataReader.GetValue(3));
                     list.Add(score);
                 }
                 return list;

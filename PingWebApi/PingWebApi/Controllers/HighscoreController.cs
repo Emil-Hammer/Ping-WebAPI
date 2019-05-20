@@ -15,7 +15,7 @@ namespace PingWebApi.Controllers
         [HttpGet("type/{type}", Name ="GetType")]
         public IEnumerable<UserScore> GetAllScoresFromType(string type)
         {
-            var list = DatabaseCommand.ReadScore($"SELECT DISTINCT UserId, Score FROM User_Score ORDER BY Score DESC WHERE Type = '{type}'");
+            var list = DatabaseCommand.ReadScore($"SELECT DISTINCT UserId, Score, Time, Type FROM User_Score WHERE Type = '{type}' ORDER BY Score DESC");
             var newList = new List<UserScore>();
             foreach (var variable in list)
             {
