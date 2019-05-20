@@ -12,15 +12,15 @@ namespace PingWebApi.Controllers
         private UsersController _usersController = new UsersController();
 
         // GET: api/Highscore
-        [HttpGet]
-        public IEnumerable<UserScore> GetAllScores()
+        [HttpGet("type/{type}", Name ="GetType")]
+        public IEnumerable<UserScore> GetAllScoresFromType(string type)
         {
-            var list = DatabaseCommand.ReadScore("SELECT DISTINCT UserId, Score FROM User_Score ORDER BY Score DESC");
+            var list = DatabaseCommand.ReadScore($"SELECT DISTINCT UserId, Score FROM User_Score ORDER BY Score DESC WHERE Type = '{type}'");
             var newList = new List<UserScore>();
             foreach (var variable in list)
             {
                 var username = _usersController.GetUser(variable.UserId).Username;
-                newList.Add(new UserScore(username, variable.Score));
+                newList.Add(new UserScore(username, variable.Score, variable.Type));
             }
             return newList;
         }
@@ -34,7 +34,7 @@ namespace PingWebApi.Controllers
             foreach (var variable in list)
             {
                 var username = _usersController.GetUser(variable.UserId).Username;
-                newList.Add(new UserScore(username, variable.Score));
+                newList.Add(new UserScore(username, variable.Score, variable.Type));
             }
             return newList;
         }
@@ -48,7 +48,7 @@ namespace PingWebApi.Controllers
             foreach (var variable in list)
             {
                 var username = _usersController.GetUser(variable.UserId).Username;
-                newList.Add(new UserScore(username, variable.Score));
+                newList.Add(new UserScore(username, variable.Score, variable.Type));
             }
             return newList;
         }
