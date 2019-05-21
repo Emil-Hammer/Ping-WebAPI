@@ -44,18 +44,23 @@ namespace PingWebApi.Controllers
         [HttpGet("{type}/top/{amount}", Name = "Top")]
         public IEnumerable<UserScore> GetTop(int amount, string type)
         {
-            var list = DatabaseCommand.ReadScore(
-                $"SELECT TOP {amount} MQ.UserId, MQ.Score, MQ.Time, MQ.Type " +
-                $"FROM dbo.User_Score AS MQ " +
-                $"JOIN(SELECT UserId, MAX(Score) AS Score " +
-                    $"FROM dbo.User_Score " +
-                    $"GROUP BY UserId) AS SQ " +
-                $"ON SQ.UserId = MQ.UserId AND SQ.Score = MQ.Score " +
-                $"WHERE Type = '{type}' " +
-                $"ORDER BY Score DESC");
+            //var list = DatabaseCommand.ReadScore(
+            //    $"SELECT TOP {amount} MQ.UserId, MQ.Score, MQ.Time, MQ.Type " +
+            //    $"FROM dbo.User_Score AS MQ " +
+            //    $"JOIN(SELECT UserId, MAX(Score) AS Score " +
+            //        $"FROM dbo.User_Score " +
+            //        $"GROUP BY UserId) AS SQ " +
+            //    $"ON SQ.UserId = MQ.UserId AND SQ.Score = MQ.Score " +
+            //    $"WHERE Type = '{type}' " +
+            //    $"ORDER BY Score DESC");
+
+            var list = DatabaseCommand.ReadScore($"SELECT * From User_Score");
+            var filteredList = list.FindAll(o => o.Type == type);
+            var distinctList = filteredList.GroupBy(x => x.UserId, 
+                (k, g) => g.Aggregate((a,x) => x.Score > a.Score ? x : a));
  
             var newList = new List<UserScore>();
-            foreach (var variable in list)
+            foreach (var variable in distinctList)
             {
                 var username = _usersController.GetUser(variable.UserId).Username;
                 newList.Add(new UserScore(username, variable.Score, variable.Time, variable.Type));
