@@ -67,7 +67,7 @@ namespace PingWebApi.Controllers
         [HttpPost]
         public HttpStatusCode Post([FromBody] UserScore userScore)
         {
-            int status = DatabaseCommand.ExecuteQuery($"INSERT INTO User_Score(UserId, Score, Time, Type) VALUES('{userScore.UserId}', '{userScore.Score}', '{userScore.Time}', {userScore.Type}')");
+            int status = DatabaseCommand.ExecuteQuery($"INSERT INTO User_Score(UserId, Score, Time, Type) VALUES('{userScore.UserId}', '{userScore.Score}', '{userScore.Time}', '{userScore.Type}')");
 
             if (status == 1)
             {
